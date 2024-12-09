@@ -1,16 +1,13 @@
-# Solana Trading Bot Fehlerbehebung
+# Orca DEX Trading Bot
 
-Ein Hilfsskript zur automatischen Erkennung und Behebung von Verbindungsproblemen für Solana Trading Bots.
+Advanced trading bot for Solana's Orca DEX with live trading and backtesting capabilities.
 
 ## Features
+- Live trading on Orca DEX Whirlpools
+- Real-time wallet balance tracking
+- 24h backtesting system
+- Whirlpool integration
+- Automatic trade execution
+- Position management
 
-- Automatische Überprüfung der RPC-Verbindungen (Mainnet und Devnet)
-- Überwachung der Phantom Wallet-Verbindung
-- Automatische Wiederherstellung von Verbindungen
-- Validierung von Handelsausführungen
-- Kontinuierliche Überwachung und Protokollierung
-
-## Installation
-
-1. Repository klonen
-2. Abhängigkeiten installieren:
+## Structure
