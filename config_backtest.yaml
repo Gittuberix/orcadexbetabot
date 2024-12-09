@@ -1,0 +1,52 @@
+# Network Configuration
+network: mainnet
+network_config:
+  rpc_endpoint: https://api.mainnet-beta.solana.com
+  orca_api: https://api.orca.so
+  priority_fee: 0.000001
+
+# Trading Parameters
+trading_params:
+  update_interval: 3  # seconds
+  candle_interval: 60  # seconds
+  cache_duration: 10  # seconds
+  min_liquidity: 10000  # USD
+  min_volume_24h: 1000  # USD
+  slippage_tolerance: 0.005  # 0.5%
+  maker_fee: 0.0020  # 0.20%
+  taker_fee: 0.0035  # 0.35%
+  protocol_fee: 0.0001  # 0.01%
+
+# Trading Settings
+trading_enabled: true
+backtesting_mode: true
+max_trades_per_day: 100
+min_profit_threshold: 0.005  # 0.5%
+
+# Risk Management
+max_position_size: 1000.0  # USD
+stop_loss_percentage: 0.02  # 2%
+take_profit_percentage: 0.05  # 5%
+
+# Memecoin Strategy Settings
+meme_sniping:
+  enabled: true
+  max_token_price: 0.001    # Maximum token price $0.001
+  min_liquidity: 10000.0    # Minimum liquidity $10k
+  min_holders: 100          # Minimum number of holders
+  max_position_size: 0.5    # Max 0.5 SOL per trade
+  max_liquidity_percentage: 0.01  # Max 1% of pool liquidity
+  
+  # Entry Criteria
+  min_liquidity_growth: 0.5  # 50% minimum liquidity growth
+  min_price_growth: 0.2     # 20% minimum price growth
+  max_price_growth: 5.0     # 500% maximum price growth
+  breakout_threshold: 1.2    # 20% breakout threshold
+  
+  # Exit Criteria
+  stop_loss: 0.3     # 30% stop loss
+  take_profit: 2.0   # 200% take profit
+  
+  # Timing
+  max_entry_time: 300  # Maximum time for early entry (5 minutes)
+  min_hold_time: 60    # Minimum hold time (1 minute) 

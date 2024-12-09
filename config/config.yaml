@@ -1,0 +1,21 @@
+network_config:
+  jupiter_api: https://price.jup.ag/v4
+  max_retries: 3
+  orca_api: https://api.orca.so
+  retry_delay: 1
+  rpc_endpoint: https://api.mainnet-beta.solana.com
+  whirlpool_program: whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc
+risk_management:
+  max_daily_loss: 5.0
+  max_drawdown: 10.0
+  max_open_positions: 3
+  max_position_size: 1.0
+  max_slippage: 0.01
+  min_liquidity: 10000
+trading_params:
+  candle_interval: 1m
+  min_liquidity: 10000
+  min_volume_24h: 5000
+  position_size: 0.1
+  stop_loss: 0.02
+  take_profit: 0.05

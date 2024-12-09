@@ -1,0 +1,204 @@
+2024-12-08 23:04:46,589 - asyncio - DEBUG - Using proactor: IocpProactor
+2024-12-08 23:04:46,756 - orca_bot - INFO - Starting data fetch test...
+2024-12-08 23:04:46,757 - orca_bot - INFO - Fetching historical data for last 1 days...
+2024-12-08 23:04:46,758 - orca_bot - DEBUG - Fetching pools from: https://api.orca.so/v1/whirlpool/list
+2024-12-08 23:04:46,839 - asyncio - DEBUG - Using proactor: IocpProactor
+2024-12-08 23:04:47,004 - orca_bot - INFO - Starting data fetch test...
+2024-12-08 23:04:47,005 - orca_bot - INFO - Fetching historical data for last 1 days...
+2024-12-08 23:04:47,006 - orca_bot - DEBUG - Fetching pools from: https://api.orca.so/v1/whirlpool/list
+2024-12-08 23:04:49,747 - orca_bot - DEBUG - API Response Status: 200
+2024-12-08 23:04:49,749 - orca_bot - DEBUG - Found 2 total pools
+2024-12-08 23:04:49,750 - orca_bot - ERROR - Error in fetch_historical_data: 0
+Traceback (most recent call last):
+  File "C:\Users\User\SolanaOrcaBot\src\data_fetcher.py", line 36, in fetch_historical_data
+    logger.debug(f"Sample pool data: {pools[0]}")
+                                      ~~~~~^^^
+KeyError: 0
+2024-12-08 23:04:49,773 - orca_bot - ERROR - No data returned!
+2024-12-08 23:04:49,929 - orca_bot - DEBUG - API Response Status: 200
+2024-12-08 23:04:49,930 - orca_bot - DEBUG - Found 2 total pools
+2024-12-08 23:04:49,931 - orca_bot - ERROR - Error in fetch_historical_data: 0
+Traceback (most recent call last):
+  File "C:\Users\User\SolanaOrcaBot\src\data_fetcher.py", line 36, in fetch_historical_data
+    logger.debug(f"Sample pool data: {pools[0]}")
+                                      ~~~~~^^^
+KeyError: 0
+2024-12-08 23:04:49,953 - orca_bot - ERROR - No data returned!
+2024-12-08 23:05:50,917 - asyncio - DEBUG - Using proactor: IocpProactor
+2024-12-08 23:05:50,920 - orca_bot - DEBUG - Loaded config: {'network_config': {'max_retries': 3, 'orca_api': 'https://api.orca.so', 'retry_delay': 1, 'rpc_endpoint': 'https://api.mainnet-beta.solana.com'}, 'risk_management': {'max_daily_loss': 5.0, 'max_drawdown': 10.0, 'max_open_positions': 3, 'max_position_size': 1.0, 'max_slippage': 0.01, 'min_liquidity': 10000}, 'trading_params': {'candle_interval': 60, 'min_liquidity': 10000, 'min_volume_24h': 5000, 'position_size': 0.1, 'stop_loss': 0.02, 'take_profit': 0.05}}
+2024-12-08 23:05:51,095 - orca_bot - INFO - Starting data fetch test...
+2024-12-08 23:05:51,096 - orca_bot - DEBUG - Fetching pools from: https://api.orca.so/v1/whirlpool/list
+2024-12-08 23:05:51,216 - asyncio - DEBUG - Using proactor: IocpProactor
+2024-12-08 23:05:51,219 - orca_bot - DEBUG - Loaded config: {'network_config': {'max_retries': 3, 'orca_api': 'https://api.orca.so', 'retry_delay': 1, 'rpc_endpoint': 'https://api.mainnet-beta.solana.com'}, 'risk_management': {'max_daily_loss': 5.0, 'max_drawdown': 10.0, 'max_open_positions': 3, 'max_position_size': 1.0, 'max_slippage': 0.01, 'min_liquidity': 10000}, 'trading_params': {'candle_interval': 60, 'min_liquidity': 10000, 'min_volume_24h': 5000, 'position_size': 0.1, 'stop_loss': 0.02, 'take_profit': 0.05}}
+2024-12-08 23:05:51,384 - orca_bot - INFO - Starting data fetch test...
+2024-12-08 23:05:51,384 - orca_bot - DEBUG - Fetching pools from: https://api.orca.so/v1/whirlpool/list
+2024-12-08 23:05:51,509 - asyncio - DEBUG - Using proactor: IocpProactor
+2024-12-08 23:05:51,512 - orca_bot - DEBUG - Loaded config: {'network_config': {'max_retries': 3, 'orca_api': 'https://api.orca.so', 'retry_delay': 1, 'rpc_endpoint': 'https://api.mainnet-beta.solana.com'}, 'risk_management': {'max_daily_loss': 5.0, 'max_drawdown': 10.0, 'max_open_positions': 3, 'max_position_size': 1.0, 'max_slippage': 0.01, 'min_liquidity': 10000}, 'trading_params': {'candle_interval': 60, 'min_liquidity': 10000, 'min_volume_24h': 5000, 'position_size': 0.1, 'stop_loss': 0.02, 'take_profit': 0.05}}
+2024-12-08 23:05:51,675 - orca_bot - INFO - Starting data fetch test...
+2024-12-08 23:05:51,676 - orca_bot - DEBUG - Fetching pools from: https://api.orca.so/v1/whirlpool/list
+2024-12-08 23:05:53,078 - orca_bot - DEBUG - API Response Status: 200
+2024-12-08 23:05:53,079 - orca_bot - INFO - Successfully fetched 2 pools
+2024-12-08 23:05:53,080 - orca_bot - ERROR - Test failed: 0
+Traceback (most recent call last):
+  File "C:\Users\User\SolanaOrcaBot\src\test_data.py", line 32, in test_data_fetching
+    sample_pool = pools[0]
+                  ~~~~~^^^
+KeyError: 0
+2024-12-08 23:05:54,272 - orca_bot - DEBUG - API Response Status: 200
+2024-12-08 23:05:54,273 - orca_bot - INFO - Successfully fetched 2 pools
+2024-12-08 23:05:54,274 - orca_bot - ERROR - Test failed: 0
+Traceback (most recent call last):
+  File "C:\Users\User\SolanaOrcaBot\src\test_data.py", line 32, in test_data_fetching
+    sample_pool = pools[0]
+                  ~~~~~^^^
+KeyError: 0
+2024-12-08 23:05:54,391 - orca_bot - DEBUG - API Response Status: 200
+2024-12-08 23:05:54,393 - orca_bot - INFO - Successfully fetched 2 pools
+2024-12-08 23:05:54,393 - orca_bot - ERROR - Test failed: 0
+Traceback (most recent call last):
+  File "C:\Users\User\SolanaOrcaBot\src\test_data.py", line 32, in test_data_fetching
+    sample_pool = pools[0]
+                  ~~~~~^^^
+KeyError: 0
+2024-12-08 23:07:37,185 - asyncio - DEBUG - Using proactor: IocpProactor
+2024-12-08 23:07:37,189 - orca_bot - INFO - Testing API endpoints...
+2024-12-08 23:07:37,190 - orca_bot - INFO - RPC endpoint: https://api.mainnet-beta.solana.com
+2024-12-08 23:07:37,190 - orca_bot - INFO - Orca API: https://api.orca.so
+2024-12-08 23:07:37,352 - orca_bot - INFO - Testing Solana RPC...
+2024-12-08 23:07:37,353 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Making HTTP request. URI: https://api.mainnet-beta.solana.com, RequestID: 1, Method: getSlot, Params: ({'commitment': 'finalized'},)
+2024-12-08 23:07:37,472 - httpx._client - DEBUG - HTTP Request: POST https://api.mainnet-beta.solana.com "HTTP/1.1 200 OK"
+2024-12-08 23:07:37,474 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Getting response HTTP. URI: https://api.mainnet-beta.solana.com, Method: getSlot, Response: {"jsonrpc":"2.0","result":306265970,"id":1}
+
+2024-12-08 23:07:37,475 - orca_bot - INFO - Current slot: {'jsonrpc': '2.0', 'result': 306265970, 'id': 1}
+2024-12-08 23:07:37,476 - orca_bot - INFO - Fetching pool list...
+2024-12-08 23:07:37,477 - orca_bot - DEBUG - Fetching pools from: https://api.orca.so/v1/whirlpools
+2024-12-08 23:07:40,590 - orca_bot - ERROR - API Error (404): <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /v1/whirlpools</pre>
+</body>
+</html>
+
+2024-12-08 23:07:40,592 - orca_bot - ERROR - No pools returned!
+2024-12-08 23:09:31,628 - asyncio - DEBUG - Using proactor: IocpProactor
+2024-12-08 23:09:31,631 - orca_bot - INFO - Testing API endpoints...
+2024-12-08 23:09:31,632 - orca_bot - INFO - RPC endpoint: https://api.mainnet-beta.solana.com
+2024-12-08 23:09:31,632 - orca_bot - INFO - Orca API: https://api.orca.so/v1
+2024-12-08 23:09:31,795 - orca_bot - INFO - Testing Solana RPC...
+2024-12-08 23:09:31,796 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Making HTTP request. URI: https://api.mainnet-beta.solana.com, RequestID: 1, Method: getSlot, Params: ({'commitment': 'finalized'},)
+2024-12-08 23:09:31,898 - httpx._client - DEBUG - HTTP Request: POST https://api.mainnet-beta.solana.com "HTTP/1.1 200 OK"
+2024-12-08 23:09:31,900 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Getting response HTTP. URI: https://api.mainnet-beta.solana.com, Method: getSlot, Response: {"jsonrpc":"2.0","result":306266227,"id":1}
+
+2024-12-08 23:09:31,901 - orca_bot - INFO - Current slot: {'jsonrpc': '2.0', 'result': 306266227, 'id': 1}
+2024-12-08 23:09:31,902 - orca_bot - INFO - Fetching pool list...
+2024-12-08 23:09:31,902 - orca_bot - DEBUG - Fetching whirlpools from: https://api.orca.so/v1/whirlpools/list
+2024-12-08 23:09:32,601 - orca_bot - ERROR - API Error (404): <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /v1/whirlpools/list</pre>
+</body>
+</html>
+
+2024-12-08 23:09:32,603 - orca_bot - ERROR - No pools returned!
+2024-12-08 23:10:27,874 - asyncio - DEBUG - Using proactor: IocpProactor
+2024-12-08 23:10:27,877 - orca_bot - INFO - Testing API endpoints...
+2024-12-08 23:10:27,878 - orca_bot - INFO - RPC endpoint: https://api.mainnet-beta.solana.com
+2024-12-08 23:10:27,878 - orca_bot - INFO - Orca API: https://api.orca.so
+2024-12-08 23:10:28,045 - orca_bot - INFO - Testing Solana RPC...
+2024-12-08 23:10:28,046 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Making HTTP request. URI: https://api.mainnet-beta.solana.com, RequestID: 1, Method: getSlot, Params: ({'commitment': 'finalized'},)
+2024-12-08 23:10:28,212 - httpx._client - DEBUG - HTTP Request: POST https://api.mainnet-beta.solana.com "HTTP/1.1 200 OK"
+2024-12-08 23:10:28,214 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Getting response HTTP. URI: https://api.mainnet-beta.solana.com, Method: getSlot, Response: {"jsonrpc":"2.0","result":306266323,"id":1}
+
+2024-12-08 23:10:28,215 - orca_bot - INFO - Current slot: {'jsonrpc': '2.0', 'result': 306266323, 'id': 1}
+2024-12-08 23:10:28,216 - orca_bot - INFO - Fetching pool list...
+2024-12-08 23:10:28,217 - orca_bot - DEBUG - Fetching pools from: https://api.orca.so/pools/v1/list
+2024-12-08 23:10:28,918 - orca_bot - ERROR - API Error (404): <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /pools/v1/list</pre>
+</body>
+</html>
+
+2024-12-08 23:10:28,920 - orca_bot - ERROR - No pools returned!
+2024-12-08 23:10:50,073 - asyncio - DEBUG - Using proactor: IocpProactor
+2024-12-08 23:10:50,076 - orca_bot - INFO - Testing API endpoints...
+2024-12-08 23:10:50,077 - orca_bot - INFO - RPC endpoint: https://api.mainnet-beta.solana.com
+2024-12-08 23:10:50,078 - orca_bot - INFO - Orca API: https://api.orca.so
+2024-12-08 23:10:50,246 - orca_bot - INFO - Testing Solana RPC...
+2024-12-08 23:10:50,247 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Making HTTP request. URI: https://api.mainnet-beta.solana.com, RequestID: 1, Method: getSlot, Params: ({'commitment': 'finalized'},)
+2024-12-08 23:10:50,331 - httpx._client - DEBUG - HTTP Request: POST https://api.mainnet-beta.solana.com "HTTP/1.1 200 OK"
+2024-12-08 23:10:50,333 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Getting response HTTP. URI: https://api.mainnet-beta.solana.com, Method: getSlot, Response: {"jsonrpc":"2.0","result":306266402,"id":1}
+
+2024-12-08 23:10:50,334 - orca_bot - INFO - Current slot: {'jsonrpc': '2.0', 'result': 306266402, 'id': 1}
+2024-12-08 23:10:50,335 - orca_bot - INFO - Fetching pool list...
+2024-12-08 23:10:50,336 - orca_bot - DEBUG - Fetching pools from: https://api.orca.so/pools/v1/list
+2024-12-08 23:10:51,032 - orca_bot - ERROR - API Error (404): <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /pools/v1/list</pre>
+</body>
+</html>
+
+2024-12-08 23:10:51,034 - orca_bot - ERROR - No pools returned!
+2024-12-08 23:12:30,744 - asyncio - DEBUG - Using proactor: IocpProactor
+2024-12-08 23:12:30,748 - orca_bot - INFO - Testing API endpoints...
+2024-12-08 23:12:30,748 - orca_bot - INFO - RPC endpoint: https://api.mainnet-beta.solana.com
+2024-12-08 23:12:30,749 - orca_bot - INFO - Orca API: https://api.orca.so
+2024-12-08 23:12:30,908 - orca_bot - INFO - Testing Solana RPC...
+2024-12-08 23:12:30,909 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Making HTTP request. URI: https://api.mainnet-beta.solana.com, RequestID: 1, Method: getSlot, Params: ({'commitment': 'finalized'},)
+2024-12-08 23:12:31,272 - httpx._client - DEBUG - HTTP Request: POST https://api.mainnet-beta.solana.com "HTTP/1.1 200 OK"
+2024-12-08 23:12:31,274 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Getting response HTTP. URI: https://api.mainnet-beta.solana.com, Method: getSlot, Response: {"jsonrpc":"2.0","result":306266677,"id":1}
+
+2024-12-08 23:12:31,276 - orca_bot - INFO - Current slot: {'jsonrpc': '2.0', 'result': 306266677, 'id': 1}
+2024-12-08 23:12:31,277 - orca_bot - INFO - Fetching pool list...
+2024-12-08 23:12:31,277 - orca_bot - ERROR - Error fetching pools: AsyncClient.get_program_accounts() got an unexpected keyword argument 'filters'
+Traceback (most recent call last):
+  File "C:\Users\User\SolanaOrcaBot\src\data_fetcher.py", line 97, in _get_all_pools
+    response = await self.rpc.get_program_accounts(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: AsyncClient.get_program_accounts() got an unexpected keyword argument 'filters'
+2024-12-08 23:12:31,303 - orca_bot - ERROR - No pools returned!
+2024-12-08 23:23:00,492 - asyncio - DEBUG - Using proactor: IocpProactor
+2024-12-08 23:23:00,495 - orca_bot - INFO - Config loaded successfully
+2024-12-08 23:23:00,498 - orca_bot - ERROR - Performance test failed: 'profit'
+2024-12-08 23:23:00,498 - orca_bot - INFO - 
+==================== Testing Config ====================
+2024-12-08 23:23:00,499 - orca_bot - INFO - 
+==================== Testing RPC Connection ====================
+2024-12-08 23:23:00,662 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Making HTTP request. URI: https://api.mainnet-beta.solana.com, RequestID: 1, Method: getSlot, Params: ({'commitment': 'finalized'},)
+2024-12-08 23:23:00,782 - httpx._client - DEBUG - HTTP Request: POST https://api.mainnet-beta.solana.com "HTTP/1.1 200 OK"
+2024-12-08 23:23:00,783 - solanaweb3.rpc.httprpc.HTTPClient - DEBUG - Getting response HTTP. URI: https://api.mainnet-beta.solana.com, Method: getSlot, Response: {"jsonrpc":"2.0","result":306268190,"id":1}
+
+2024-12-08 23:23:00,784 - orca_bot - INFO - Current slot: {'jsonrpc': '2.0', 'result': 306268190, 'id': 1}
+2024-12-08 23:23:00,786 - orca_bot - INFO - 
+==================== Testing Data Fetching ====================
+2024-12-08 23:23:00,948 - orca_bot - ERROR - Error fetching pools: AsyncClient.get_program_accounts() got an unexpected keyword argument 'filters'
+Traceback (most recent call last):
+  File "C:\Users\User\SolanaOrcaBot\src\data_fetcher.py", line 97, in _get_all_pools
+    response = await self.rpc.get_program_accounts(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: AsyncClient.get_program_accounts() got an unexpected keyword argument 'filters'
+2024-12-08 23:23:00,974 - orca_bot - INFO - 
+==================== Testing Backtest System ====================
+2024-12-08 23:23:00,975 - orca_bot - ERROR - Backtest test failed: expected str, bytes or os.PathLike object, not dict
+2024-12-08 23:23:00,976 - orca_bot - INFO - 
+==================== Testing Risk Management ====================
+2024-12-08 23:23:00,977 - root - ERROR - Risk check error: 'dict' object has no attribute 'amount'
+2024-12-08 23:23:00,978 - orca_bot - INFO - 
+==================== Testing Performance Analysis ====================

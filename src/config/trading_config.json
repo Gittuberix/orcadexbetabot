@@ -1,0 +1,14 @@
+{
+    "initial_capital": 1.0,
+    "max_trade_size": 0.1,
+    "min_trade_size": 0.01,
+    "fee_percentage": 0.003,
+    "slippage_tolerance": 0.01,
+    "short_term_sma_fast": 5,
+    "short_term_sma_slow": 15,
+    "momentum_threshold": 0.02,
+    "volume_multiplier": 1.5,
+    "stop_loss_percentage": 0.02,
+    "take_profit_percentage": 0.05,
+    "max_daily_trades": 10
+}

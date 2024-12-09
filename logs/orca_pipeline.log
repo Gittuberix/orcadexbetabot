@@ -1,0 +1,10 @@
+2024-12-09 09:29:31,431 - __main__ - INFO - Starting Orca Pipeline application
+2024-12-09 09:29:31,432 - __main__ - INFO - Starting main pipeline process
+2024-12-09 09:29:31,432 - __main__ - DEBUG - Initializing OrcaPipeline with environment: mainnet
+2024-12-09 09:29:31,432 - __main__ - DEBUG - Watchlist pools configured: {'SOL/USDC': 'HJPjoWUrhoZzkNfRpHuieeFk9WcZWjwy6PBjZ81ngndJ'}
+2024-12-09 09:29:31,432 - __main__ - DEBUG - Endpoints configured: {'api': 'https://api.mainnet.orca.so', 'whirlpool': 'https://api.orca.so/v1/whirlpool', 'whirlpool_list': 'https://api.orca.so/v1/whirlpool/list', 'rpc': 'https://api.mainnet.orca.so/rpc'}
+2024-12-09 09:29:31,432 - __main__ - DEBUG - Pipeline instance created
+2024-12-09 09:29:31,432 - __main__ - DEBUG - Fetching pools from: https://api.orca.so/v1/whirlpool/list
+2024-12-09 09:48:56,192 - src.data.orca_pipeline - DEBUG - Initializing OrcaPipeline with environment: mainnet
+2024-12-09 09:48:56,193 - src.data.orca_pipeline - DEBUG - Watchlist pools configured: {'SOL/USDC': 'HJPjoWUrhoZzkNfRpHuieeFk9WcZWjwy6PBjZ81ngndJ'}
+2024-12-09 09:48:56,193 - src.data.orca_pipeline - DEBUG - Endpoints configured: {'api': 'https://api.mainnet.orca.so', 'whirlpool': 'https://api.orca.so/v1/whirlpool', 'whirlpool_list': 'https://api.orca.so/v1/whirlpool/list', 'rpc': 'https://api.mainnet.orca.so/rpc'}

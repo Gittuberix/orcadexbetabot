@@ -1,0 +1,22 @@
+{
+    "network": {
+        "rpc_url": "https://api.mainnet-beta.solana.com",
+        "orca_api": "https://api.orca.so",
+        "orca_whirlpool": "https://api.orca.so/v2/whirlpool",
+        "backup_rpc": "https://solana-api.projectserum.com"
+    },
+    "wallet": {
+        "public_key": "Bh3xV3ctC45DSy92JK7MKbC2fYe1tZMmoyi3XyTGcV3b",
+        "network": "mainnet-beta"
+    },
+    "pools": {
+        "SOL_USDC": "7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJpi",
+        "min_volume": 10000,
+        "min_liquidity": 50000
+    },
+    "trading": {
+        "initial_capital": 1.0,
+        "max_trade_size": 0.01,
+        "max_slippage": 0.01
+    }
+}
