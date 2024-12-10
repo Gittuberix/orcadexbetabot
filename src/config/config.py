@@ -1,5 +1,28 @@
 import json
 from pathlib import Path
+from dataclasses import dataclass
+from typing import Dict
+
+@dataclass
+class OrcaConfig:
+    RPC_URL: str = "https://api.mainnet-beta.solana.com"
+    WHIRLPOOL_PROGRAM: str = "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc"
+    UPDATE_INTERVAL: int = 1  # Sekunden
+    
+    # Wichtige Pool-Adressen
+    POOLS: Dict[str, str] = {
+        "SOL/USDC": "HJPjoWUrhoZzkNfRpHuieeFk9WcZWjwy6PBjZ81ngndJ",
+        "SOL/USDT": "4GpUivZ2jvZqQ3vJRsoq5PwnYv6gdV9fJ9BzHT2JcRr7",
+        # Weitere Pools hier hinzufügen
+    }
+    
+    @classmethod
+    def load(cls, config_path: str = "config/orca_config.json"):
+        if Path(config_path).exists():
+            with open(config_path, 'r') as f:
+                config_data = json.load(f)
+                return cls(**config_data)
+        return cls()
 
 CONFIG = {
     "network": {

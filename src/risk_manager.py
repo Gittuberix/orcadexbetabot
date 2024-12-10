@@ -1,55 +1,78 @@
-from models import Trade
 import logging
+from decimal import Decimal
+from typing import Dict, Optional
+from datetime import datetime, timedelta
+from src.models import TradeData
+from rich.console import Console
 
+console = Console()
 logger = logging.getLogger(__name__)
 
 class RiskManager:
-    def __init__(self, config: dict = None):
-        self.config = config or {}
-        self.max_position_size = self.config.get('max_position_size', 0.1)
-        self.max_drawdown = self.config.get('max_drawdown', 0.2)
-        self.stop_loss = self.config.get('stop_loss', 0.05)
-
-    def check_trade(self, trade: Trade, current_price: float) -> bool:
+    def __init__(self):
+        self.max_position_size = Decimal("1000")  # Max Position in USD
+        self.max_daily_loss = Decimal("100")      # Max Tagesverlust in USD
+        self.max_drawdown = Decimal("0.1")        # 10% max Drawdown
+        
+        self.positions = {}
+        self.daily_pnl = Decimal("0")
+        self.last_reset = datetime.now()
+        
+    def can_open_position(self, trade: TradeData) -> bool:
+        """Prüft ob Position eröffnet werden kann"""
         try:
-            if not hasattr(trade, 'amount'):
+            # Prüfe Positionsgröße
+            position_value = Decimal(str(trade.amount)) * Decimal(str(trade.price))
+            if position_value > self.max_position_size:
+                logger.warning(f"Position zu groß: ${position_value}")
                 return False
                 
-            position_value = trade.amount * current_price
-            
-            if trade.entry_price:
-                loss_percentage = (current_price - trade.entry_price) / trade.entry_price
+            # Prüfe Tagesverlust
+            if self.daily_pnl < -self.max_daily_loss:
+                logger.warning(f"Maximaler Tagesverlust erreicht: ${self.daily_pnl}")
+                return False
                 
+            # Prüfe Drawdown
+            total_value = sum(
+                Decimal(str(pos.amount)) * Decimal(str(pos.price))
+                for pos in self.positions.values()
+            )
+            if total_value > 0:
+                drawdown = (self.daily_pnl / total_value).abs()
+                if drawdown > self.max_drawdown:
+                    logger.warning(f"Maximaler Drawdown erreicht: {drawdown:.1%}")
+                    return False
+                    
             return True
             
         except Exception as e:
-            logging.error(f"Risk check error: {e}")
-            return False            
-    def _calculate_price_impact(self, signal: Signal, pool: Pool) -> float:
-        """Berechnet den erwarteten Price Impact"""
-        try:
-            # Vereinfachte Price Impact Berechnung
-            impact = (signal.amount / pool.liquidity) ** 0.5
-            return impact
-        except:
-            return float('inf')
+            logger.error(f"Fehler in der Risikoprüfung: {e}")
+            return False
             
-    def update_position(self, trade: Trade):
-        """Aktualisiert Position und P/L Tracking"""
-        if trade.type == 'buy':
-            self.open_positions[trade.pool_address] = trade
-            self.token_exposure[trade.token_address] = (
-                self.token_exposure.get(trade.token_address, 0) + trade.amount
-            )
-        else:  # sell
-            if trade.pool_address in self.open_positions:
-                del self.open_positions[trade.pool_address]
-                self.token_exposure[trade.token_address] -= trade.amount
+    def update_position(self, trade: TradeData):
+        """Aktualisiert Position und P&L"""
+        try:
+            # Reset täglich
+            if datetime.now() - self.last_reset > timedelta(days=1):
+                self.daily_pnl = Decimal("0")
+                self.last_reset = datetime.now()
                 
-            # P/L Update
-            if trade.profit:
-                self.daily_loss += trade.profit
+            # Update Position
+            if trade.pool_name in self.positions:
+                old_pos = self.positions[trade.pool_name]
+                pnl = (Decimal(str(trade.price)) - Decimal(str(old_pos.price))) * \
+                      Decimal(str(old_pos.amount))
+                self.daily_pnl += pnl
                 
-    def reset_daily_stats(self):
-        """Setzt tägliche Statistiken zurück"""
-        self.daily_loss = 0.0
+            self.positions[trade.pool_name] = trade
+            
+        except Exception as e:
+            logger.error(f"Fehler beim Position Update: {e}")
+            
+    def get_position_size(self, pool_name: str) -> Decimal:
+        """Holt Positionsgröße"""
+        if pool_name not in self.positions:
+            return Decimal("0")
+            
+        pos = self.positions[pool_name]
+        return Decimal(str(pos.amount)) * Decimal(str(pos.price))

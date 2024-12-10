@@ -2,69 +2,64 @@ import asyncio
 import logging
 from datetime import datetime, timedelta
 from rich.console import Console
-from data.orca_client import OrcaClient
-from wallet_manager import WalletManager
-from strategies.meme_strategy import MemeStrategy
-from solana.rpc.async_api import AsyncClient
+from backtest_engine import BacktestEngine
+from data_collector import DataCollector
+from trading_manager import TradingManager
+from risk_manager import RiskManager
 
 console = Console()
 logger = logging.getLogger(__name__)
 
-async def run_backtest():
-    """Führt Backtest mit Mainnet Wallet durch"""
-    console.print("\n[cyan]Starting Orca DEX Backtest...[/cyan]")
+async def run_24h_backtest():
+    console.print("\n[bold cyan]Starting 24h Backtest[/bold cyan]")
     
-    # 1. Wallet Setup
-    rpc = AsyncClient("https://api.mainnet-beta.solana.com")
-    wallet = WalletManager(rpc)
+    # Initialize components
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=1)
     
-    if not await wallet.connect():
-        console.print("[red]Failed to connect wallet[/red]")
-        return
-        
-    # 2. Orca Client
-    async with OrcaClient() as orca:
-        # 3. Strategie
-        config = {
-            'min_volume': 10000,
-            'min_liquidity': 50000,
-            'max_slippage': 0.01,
-            'position_size': 0.1
-        }
-        strategy = MemeStrategy(config)
-        
-        # 4. Pools laden
-        pools = await orca.get_whirlpools()
-        if not pools:
-            console.print("[red]No pools found[/red]")
-            return
-            
-        console.print(f"[green]Found {len(pools)} pools[/green]")
-        
-        # 5. Top Pools testen
-        for pool in pools[:10]:  # Top 10
-            console.print(f"\nAnalyzing {pool.token_a['symbol']}-{pool.token_b['symbol']}")
-            
-            # Signal generieren
-            signal = await strategy.analyze_pool({
-                'address': pool.address,
-                'price': pool.price,
-                'volume24h': pool.volume_24h,
-                'liquidity': pool.liquidity,
-                'price_history': pool.price_history
-            })
-            
-            if signal['should_trade']:
-                console.print("[green]Trade Signal:[/green]")
-                console.print(f"Type: {signal['type']}")
-                console.print(f"Amount: {signal['amount']:.4f}")
-                console.print(f"Price: ${signal['price']:.4f}")
-                console.print(f"Confidence: {signal['confidence']:.2%}")
+    backtest = BacktestEngine(
+        start_date=start_date,
+        end_date=end_date,
+        initial_capital=1000  # USDC
+    )
+    
+    # Run backtest
+    console.print("\n[yellow]Running backtest simulation...[/yellow]")
+    await backtest.run_backtest()
+    
+    # Generate report
+    report = backtest.generate_report()
+    
+    # Display results
+    console.print("\n[bold green]=== 24h Backtest Results ===[/bold green]")
+    console.print(f"Total Return: {report['total_return']:.2f}%")
+    console.print(f"Sharpe Ratio: {report['sharpe_ratio']:.2f}")
+    console.print(f"Max Drawdown: {report['max_drawdown']:.2f}%")
+    console.print(f"Win Rate: {report['win_rate']:.2f}%")
+    console.print(f"Total Trades: {len(report['trades'])}")
+    
+    # Display trade breakdown
+    console.print("\n[cyan]Trade Breakdown:[/cyan]")
+    for trade in report['trades'][:5]:  # Show first 5 trades
+        profit = trade.get('profit', 0)
+        color = "green" if profit > 0 else "red"
+        console.print(f"[{color}]Trade: {trade['type']} {trade['symbol']} - P/L: {profit:.2f}%[/{color}]")
 
 if __name__ == "__main__":
+    # Setup logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler('backtest.log'),
+            logging.StreamHandler()
+        ]
+    )
+    
     try:
-        asyncio.run(run_backtest())
+        asyncio.run(run_24h_backtest())
     except KeyboardInterrupt:
         console.print("\n[yellow]Backtest stopped by user[/yellow]")
     except Exception as e:
-        console.print(f"[red]Backtest error: {e}[/red]") 
+        console.print(f"\n[red]Backtest error: {str(e)}[/red]")
+        logger.exception("Backtest error occurred") 

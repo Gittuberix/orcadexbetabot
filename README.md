@@ -1,13 +1,16 @@
-# Orca DEX Trading Bot
+# Solana Orca DEX Trading Bot
 
-Advanced trading bot for Solana's Orca DEX with live trading and backtesting capabilities.
+Ein Trading Bot für die Orca DEX auf Solana.
 
 ## Features
-- Live trading on Orca DEX Whirlpools
-- Real-time wallet balance tracking
-- 24h backtesting system
-- Whirlpool integration
-- Automatic trade execution
-- Position management
 
-## Structure
+- Live Preis-Monitoring
+- Historische Daten & Backtesting
+- Risiko-Management
+- Automatisierte Trades
+- CLI Interface
+
+## Installation
+
+1. Python 3.9+ installieren
+2. Requirements installieren:

@@ -1,0 +1,5 @@
+{
+    "private_key": [1,2,3,...],
+    "public_key": "Ihre_Solana_Adresse",
+    "network": "mainnet-beta"
+} 

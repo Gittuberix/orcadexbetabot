@@ -5,11 +5,12 @@ from typing import Dict, List, Optional
 from rich.console import Console
 from rich.live import Live
 from rich.table import Table
-from whirlpool import WhirlpoolClient
-from models import Trade
+from ..whirlpool import WhirlpoolClient
+from ..models import Trade
 import pandas as pd
 import json
-from config.connections import ENVIRONMENTS, WHIRLPOOL_IDS
+from ..config.connections import ENVIRONMENTS, WHIRLPOOL_IDS
+from decimal import Decimal
 
 console = Console()
 logger = logging.getLogger(__name__)
@@ -36,36 +37,38 @@ class WhirlpoolBacktestEngine:
         self.data_dir = self.config['data_dir']
         self.whirlpool_ids = WHIRLPOOL_IDS
         
-    async def run_backtest(self):
-        """Führt Backtest für den gewählten Zeitraum aus"""
-        end_time = datetime.now()
-        start_time = end_time - self.period
-        
-        period_name = self._get_period_name()
-        console.print(f"\n[cyan]Starting {period_name} Backtest[/cyan]")
-        console.print(f"Period: {start_time} to {end_time}")
-        
+    async def run(self, start_date: datetime, end_date: datetime) -> Dict:
+        """Run backtest"""
         try:
-            # 1. Historische Daten laden
-            await self._load_historical_data(start_time, end_time)
+            console.print(f"\n[cyan]Running backtest from {start_date} to {end_date}[/cyan]")
             
-            # 2. Live Status anzeigen
-            with Live(self._generate_status(), refresh_per_second=1) as live:
-                # Zeitpunkte simulieren
-                current_time = start_time
-                while current_time <= end_time:
-                    await self._process_timepoint(current_time)
-                    live.update(self._generate_status())
-                    current_time += timedelta(minutes=1)
-                    
-            # 3. Ergebnisse speichern
-            self._save_results(period_name)
+            # Load historical data
+            await self._load_historical_data(start_date, end_date)
+            
+            # Initialize metrics
+            metrics = {
+                'total_trades': 0,
+                'win_rate': 0.0,
+                'total_profit': Decimal('0'),
+                'max_drawdown': Decimal('0')
+            }
+            
+            # Process each candle
+            for timestamp, candle in self.historical_data.iterrows():
+                signal = await self.strategy.analyze_candle(candle)
+                if signal:
+                    trade = await self._execute_trade(signal, candle)
+                    if trade:
+                        self.trades.append(trade)
+                        
+            # Calculate final metrics
+            metrics = self._calculate_metrics()
+            
+            return metrics
             
         except Exception as e:
             logger.error(f"Backtest failed: {e}")
-            
-        finally:
-            self._print_results()
+            return {}
             
     async def _load_historical_data(self, start_time: datetime, end_time: datetime):
         """Lädt historische Daten für den Zeitraum"""

@@ -1,100 +1,92 @@
 import logging
-from solana.rpc.async_api import AsyncClient
+from typing import Dict, Optional
 from solders.keypair import Keypair
 from solders.pubkey import Pubkey
-from solana.transaction import Transaction
-from solana.rpc.commitment import Confirmed
-import json
-from pathlib import Path
+from solana.rpc.async_api import AsyncClient
+from anchorpy import Wallet
+from orca_whirlpool.context import WhirlpoolContext
+from src.models import TradeData
 from rich.console import Console
-from typing import Optional, Dict
 
 console = Console()
 logger = logging.getLogger(__name__)
 
 class WalletManager:
-    def __init__(self, rpc_client: AsyncClient):
-        self.rpc = rpc_client
-        self.public_key = None
-        self.balances = {}
-        self.token_accounts = {}
+    def __init__(self, keypair_path: Optional[str] = None):
+        self.connection = AsyncClient("https://api.mainnet-beta.solana.com")
         
-    async def connect(self, config_path: str = 'config/wallet_config.json') -> bool:
-        """Verbindet mit Wallet über Konfiguration"""
+        # Lade Keypair
+        if keypair_path:
+            with open(keypair_path, 'r') as f:
+                secret = bytes([int(b) for b in f.read().strip('[]').split(',')])
+                self.keypair = Keypair.from_bytes(secret)
+        else:
+            self.keypair = Keypair()
+            
+        self.wallet = Wallet(self.keypair)
+        
+    async def get_sol_balance(self) -> float:
+        """Holt SOL Balance"""
         try:
-            # Config laden
-            config_file = Path(config_path)
-            if not config_file.exists():
-                raise Exception("Wallet config not found")
+            balance = await self.connection.get_balance(self.keypair.pubkey())
+            return balance / 1e9  # Lamports zu SOL
+        except Exception as e:
+            logger.error(f"Fehler beim Abrufen der SOL Balance: {e}")
+            return 0.0
+            
+    async def get_token_balances(self) -> Dict[str, float]:
+        """Holt Token Balances"""
+        try:
+            token_accounts = await self.connection.get_token_accounts_by_owner(
+                self.keypair.pubkey(),
+                {"programId": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"}
+            )
+            
+            balances = {}
+            for ta in token_accounts.value:
+                mint = ta.account.data["mint"]
+                amount = ta.account.data["amount"]
+                decimals = ta.account.data["decimals"]
+                balances[str(mint)] = amount / (10 ** decimals)
                 
-            with open(config_file) as f:
-                config = json.load(f)
-                
-            # Public Key setzen
-            self.public_key = Pubkey.from_string(config['public_key'])
+            return balances
             
-            # Balance prüfen
-            await self.update_balances()
+        except Exception as e:
+            logger.error(f"Fehler beim Abrufen der Token Balances: {e}")
+            return {}
             
-            console.print(f"[green]Connected to wallet: {self.public_key}[/green]")
-            console.print(f"SOL Balance: {self.balances.get('SOL', 0):.4f}")
+    async def execute_swap(self, trade_data: TradeData) -> bool:
+        """Führt einen Swap aus"""
+        try:
+            # Hole Pool
+            whirlpool = await self.ctx.fetcher.get_whirlpool(
+                Pubkey.from_string(trade_data.pool_address)
+            )
             
+            # Berechne Swap
+            quote = await self.ctx.fetcher.get_quote(
+                whirlpool,
+                trade_data.amount_in,
+                trade_data.side == "buy"
+            )
+            
+            # Führe Swap aus
+            tx = await self.ctx.swap(
+                whirlpool,
+                quote,
+                self.keypair.pubkey()
+            )
+            
+            # Warte auf Bestätigung
+            await self.connection.confirm_transaction(tx)
+            
+            logger.info(f"Swap erfolgreich: {tx}")
             return True
             
         except Exception as e:
-            logger.error(f"Failed to connect wallet: {e}")
+            logger.error(f"Fehler beim Swap: {e}")
             return False
             
-    async def update_balances(self):
-        """Aktualisiert Wallet Balances"""
-        if not self.public_key:
-            return
-            
-        try:
-            # SOL Balance
-            response = await self.rpc.get_balance(self.public_key)
-            self.balances['SOL'] = float(response.value) / 1e9  # Lamports zu SOL
-            
-            # Token Accounts
-            response = await self.rpc.get_token_accounts_by_owner(
-                self.public_key,
-                {'programId': TOKEN_PROGRAM_ID}
-            )
-            
-            for account in response.value:
-                mint = account.account.data.parsed['info']['mint']
-                amount = account.account.data.parsed['info']['tokenAmount']['uiAmount']
-                self.token_accounts[mint] = account.pubkey
-                self.balances[mint] = amount
-                
-        except Exception as e:
-            logger.error(f"Failed to update balances: {e}")
-            
-    def get_public_key(self) -> Optional[Pubkey]:
-        """Gibt Public Key zurück"""
-        return self.public_key
-        
-    def get_balance(self, token: str = 'SOL') -> float:
-        """Gibt Balance für Token zurück"""
-        return self.balances.get(token, 0)
-
-# Test
-async def main():
-    # RPC Client
-    rpc = AsyncClient("https://api.mainnet-beta.solana.com")
-    
-    # Wallet Manager
-    wallet = WalletManager(rpc)
-    
-    # Verbinden
-    if await wallet.connect():
-        # Balances anzeigen
-        console.print("\n[cyan]Wallet Balances:[/cyan]")
-        for token, balance in wallet.balances.items():
-            console.print(f"{token}: {balance:.4f}")
-    else:
-        console.print("[red]Failed to connect wallet[/red]")
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    async def close(self):
+        """Schließt die Verbindung"""
+        await self.connection.close()

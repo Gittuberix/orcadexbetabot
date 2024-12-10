@@ -1,126 +1,62 @@
-import requests
-import json
-from datetime import datetime
-from pathlib import Path
-from colorama import init, Fore, Style
+import logging
+from typing import Dict, List
+from solders.pubkey import Pubkey
+from orca_whirlpool.context import WhirlpoolContext
+from src.config.network_config import WHIRLPOOL_CONFIGS
+from rich.console import Console
 
-init()
+console = Console()
+logger = logging.getLogger(__name__)
 
 class TokenManager:
-    def __init__(self):
-        # APIs
-        self.ORCA_API = "https://api.mainnet.orca.so"
-        self.JUPITER_API = "https://price.jup.ag/v4"
+    def __init__(self, ctx: WhirlpoolContext):
+        self.ctx = ctx
+        self.WHIRLPOOLS = WHIRLPOOL_CONFIGS
+        self.watched_pools = {}
         
-        # Directories
-        self.data_dir = Path("data/tokens")
-        self.data_dir.mkdir(parents=True, exist_ok=True)
-        
-        # Default tokens (immer verfügbar)
-        self.DEFAULT_TOKENS = {
-            'SOL': 'So11111111111111111111111111111111111111112',
-            'USDC': 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
-        }
-        
-        # Whirlpools
-        self.WHIRLPOOLS = {
-            'SOL-USDC': '7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJpi'
-        }
-
-    def get_orca_whirlpools(self):
-        """Get all Orca Whirlpools"""
-        try:
-            print(f"{Fore.YELLOW}Fetching Orca Whirlpools...{Style.RESET_ALL}")
-            response = requests.get(f"{self.ORCA_API}/v1/whirlpool/list")
+    async def add_pool_to_watchlist(self, pool_name: str):
+        """Fügt einen Pool zur Watchlist hinzu"""
+        if pool_name not in self.WHIRLPOOLS:
+            raise ValueError(f"Unbekanntes Pool-Paar: {pool_name}")
             
-            if response.status_code == 200:
-                pools = response.json()
-                print(f"{Fore.GREEN}Found {len(pools)} whirlpools{Style.RESET_ALL}")
-                return pools
-            else:
-                print(f"{Fore.RED}Failed to fetch whirlpools: {response.status_code}{Style.RESET_ALL}")
-                return []
-                
-        except Exception as e:
-            print(f"{Fore.RED}Error fetching whirlpools: {str(e)}{Style.RESET_ALL}")
-            return []
-
-    def get_top_tokens(self):
-        """Get top tokens from Jupiter"""
-        try:
-            print(f"{Fore.YELLOW}Fetching top tokens...{Style.RESET_ALL}")
-            response = requests.get(f"{self.JUPITER_API}/tokens")
-            
-            if response.status_code == 200:
-                tokens = response.json()
-                print(f"{Fore.GREEN}Found {len(tokens)} tokens{Style.RESET_ALL}")
-                return tokens
-            else:
-                print(f"{Fore.RED}Failed to fetch tokens: {response.status_code}{Style.RESET_ALL}")
-                return []
-                
-        except Exception as e:
-            print(f"{Fore.RED}Error fetching tokens: {str(e)}{Style.RESET_ALL}")
-            return []
-
-    def update_token_list(self):
-        """Update token list with whirlpools"""
-        # Get data
-        whirlpools = self.get_orca_whirlpools()
-        tokens = self.get_top_tokens()
+        pool_config = self.WHIRLPOOLS[pool_name]
+        pool_address = pool_config['address']
         
-        # Combine data
-        token_data = {
-            'timestamp': datetime.now().isoformat(),
-            'default_tokens': self.DEFAULT_TOKENS,
-            'whirlpools': self.WHIRLPOOLS,
-            'all_whirlpools': whirlpools,
-            'top_tokens': tokens
+        # Hole Pool-Daten mit High-Level SDK
+        whirlpool = await self.ctx.fetcher.get_whirlpool(
+            Pubkey.from_string(pool_address)
+        )
+        
+        # Speichere wichtige Pool-Daten
+        self.watched_pools[pool_name] = {
+            'address': pool_address,
+            'token_a': pool_config['token_a'],
+            'token_b': pool_config['token_b'],
+            'whirlpool': whirlpool
         }
         
-        # Save data
-        self.save_token_data(token_data)
-        return token_data
-
-    def save_token_data(self, data):
-        """Save token data"""
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = self.data_dir / f"token_data_{timestamp}.json"
+        logger.info(f"Pool {pool_name} zur Watchlist hinzugefügt")
         
-        try:
-            with open(filename, 'w') as f:
-                json.dump(data, f, indent=2)
-            print(f"{Fore.GREEN}✅ Token data saved to {filename}{Style.RESET_ALL}")
-        except Exception as e:
-            print(f"{Fore.RED}Error saving token data: {str(e)}{Style.RESET_ALL}")
-
-    def load_latest_data(self):
-        """Load most recent token data"""
-        try:
-            files = sorted(self.data_dir.glob("token_data_*.json"))
-            if files:
-                latest = files[-1]
-                with open(latest, 'r') as f:
-                    data = json.load(f)
-                print(f"{Fore.GREEN}Loaded token data from {latest}{Style.RESET_ALL}")
-                return data
-            else:
-                print(f"{Fore.YELLOW}No token data found{Style.RESET_ALL}")
-                return None
-        except Exception as e:
-            print(f"{Fore.RED}Error loading token data: {str(e)}{Style.RESET_ALL}")
-            return None
-
-def main():
-    print(f"{Fore.CYAN}=== Token Manager ==={Style.RESET_ALL}")
-    
-    manager = TokenManager()
-    token_data = manager.update_token_list()
-    
-    if token_data:
-        print(f"\n{Fore.GREEN}Token update successful!{Style.RESET_ALL}")
-    else:
-        print(f"\n{Fore.RED}Token update failed!{Style.RESET_ALL}")
-
-if __name__ == "__main__":
-    main() 
+    async def get_pool_price(self, pool_name: str) -> float:
+        """Holt den aktuellen Pool-Preis"""
+        if pool_name not in self.watched_pools:
+            await self.add_pool_to_watchlist(pool_name)
+            
+        pool = self.watched_pools[pool_name]
+        whirlpool = await self.ctx.fetcher.get_whirlpool(
+            Pubkey.from_string(pool['address'])
+        )
+        
+        return float(whirlpool.sqrt_price) ** 2 / (2 ** 64)
+        
+    async def get_pool_liquidity(self, pool_name: str) -> int:
+        """Holt die aktuelle Pool-Liquidität"""
+        if pool_name not in self.watched_pools:
+            await self.add_pool_to_watchlist(pool_name)
+            
+        pool = self.watched_pools[pool_name]
+        whirlpool = await self.ctx.fetcher.get_whirlpool(
+            Pubkey.from_string(pool['address'])
+        )
+        
+        return whirlpool.liquidity

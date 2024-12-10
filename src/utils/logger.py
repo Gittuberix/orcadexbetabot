@@ -1,15 +1,19 @@
 import logging
 from rich.logging import RichHandler
-import sys
+from pathlib import Path
 
-def setup_logger():
-    # Root Logger
+def setup_logging():
+    # Erstelle logs Verzeichnis
+    log_dir = Path("logs")
+    log_dir.mkdir(exist_ok=True)
+    
+    # Konfiguriere Logging
     logging.basicConfig(
-        level=logging.DEBUG,
+        level=logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
         handlers=[
             RichHandler(rich_tracebacks=True),
-            logging.FileHandler("logs/debug.log")
+            logging.FileHandler(log_dir / "data_processing.log")
         ]
     )
     return logging.getLogger("orca_bot") 

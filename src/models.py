@@ -1,33 +1,59 @@
 from dataclasses import dataclass
+from typing import Optional, List
 from datetime import datetime
-from typing import Optional, Dict
+from decimal import Decimal
+
+@dataclass
+class WhirlpoolData:
+    pool_name: str
+    price: float
+    liquidity: int
+    volume_24h: float
+    fee_rate: float
+    timestamp: datetime
+
+@dataclass
+class TradeData:
+    pool_name: str
+    price: float
+    amount: float
+    side: str  # 'buy' oder 'sell'
+    timestamp: datetime
+
+@dataclass
+class BacktestResult:
+    total_trades: int
+    winning_trades: int
+    losing_trades: int
+    roi: Decimal
+    max_drawdown: Decimal
+    sharpe_ratio: float
+    trades: List[TradeData]
+
+@dataclass
+class PoolState:
+    address: str
+    token_a: str
+    token_b: str
+    price: Decimal
+    liquidity: int
+    volume_24h: Decimal
+    fee_rate: int
+    tick_spacing: int
+    tick_current: int
+    timestamp: datetime
 
 @dataclass
 class Trade:
-    pool_address: str
-    token_address: str
-    type: str  # 'buy' oder 'sell'
-    amount: float
-    price: float
     timestamp: datetime
-    tx_id: Optional[str] = None
-    slippage: Optional[float] = None
-    profit: Optional[float] = None
-    status: str = 'pending'  # 'pending', 'completed', 'failed'
-    source: str = 'mainnet'  # 'mainnet' oder 'backtest'
-
-@dataclass
-class Pool:
-    name: str
-    token_a: str
-    token_b: str
-    fee_tier: float
-
-@dataclass
-class Signal:
-    type: str
     pool_address: str
-    price: float
-    amount: float
-    stop_loss: Optional[float] = None
-    take_profit: Optional[float] = None 
+    side: str  # 'buy' oder 'sell'
+    amount_in: int
+    amount_out: int
+    price: Decimal
+    fee: int
+    slippage: Decimal
+    success: bool
+    gas_cost: Optional[int] = None
+    tx_signature: Optional[str] = None
+    error_message: Optional[str] = None 

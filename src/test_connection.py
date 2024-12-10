@@ -1,35 +1,51 @@
 import asyncio
-from solders.keypair import Keypair
-from solana.rpc.async_api import AsyncClient
+import logging
 from rich.console import Console
-import base58
+from .core.orca_client import OrcaClient
+from .core.solana_client import SolanaClient
+from .config.settings import ORCA_POOLS
 
 console = Console()
+logger = logging.getLogger(__name__)
 
-async def test_with_wallet():
-    # Private Key (NICHT den echten Key committen!)
-    private_key = "YOUR_PRIVATE_KEY_HERE"  # Base58 encoded
-    
+async def test_orca_connection():
+    """Test Orca DEX connection"""
     try:
-        # Wallet erstellen
-        keypair = Keypair.from_base58_string(private_key)
+        console.print("\n[yellow]Testing Orca DEX Connection...[/yellow]")
+        orca = OrcaClient()
         
-        # RPC Client
-        rpc = AsyncClient("https://api.mainnet-beta.solana.com")
-        
-        # Balance prüfen
-        response = await rpc.get_balance(keypair.pubkey())
-        balance = response['result']['value'] / 10**9  # Convert lamports to SOL
-        console.print(f"[green]Wallet Balance: {balance} SOL[/green]")
-        
-        # Whirlpool Daten abrufen
-        sol_usdc_pool = "7qbRF6YsyGuLUVs6Y1q64bdVrfe4ZcUUz1JRdoVNUJpi"
-        response = await rpc.get_account_info(sol_usdc_pool)
-        if response['result']['value']:
-            console.print("[green]✓ SOL-USDC pool data available[/green]")
+        # Test connection
+        if await orca.connect():
+            console.print("✅ Connected to Orca DEX")
             
+            # Test SOL/USDC pool data
+            pool_address = ORCA_POOLS['SOL/USDC']
+            pool_data = await orca.get_pool_data(pool_address)
+            
+            if pool_data:
+                console.print(f"✅ SOL/USDC Pool Data:")
+                console.print(f"  Price: ${float(pool_data['price']):.4f}")
+                console.print(f"  Volume: ${float(pool_data['volume24h']):,.2f}")
+                return True
+        
+        console.print("❌ Failed to connect to Orca DEX")
+        return False
+        
     except Exception as e:
-        console.print(f"[red]Error: {str(e)}[/red]")
+        console.print(f"[red]Error: {e}[/red]")
+        return False
+
+async def main():
+    """Run all connection tests"""
+    try:
+        if not await test_orca_connection():
+            console.print("[red]Failed to establish Orca connection[/red]")
+            return
+            
+        console.print("\n[green]All connection tests passed![/green]")
+        
+    except Exception as e:
+        console.print(f"[red]Test failed: {e}[/red]")
 
 if __name__ == "__main__":
-    asyncio.run(test_with_wallet()) 
+    asyncio.run(main()) 

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orca Trading Bot Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Orca Trading Bot Dashboard</h1>
+        
+        <div class="status-panel">
+            <h2>Status</h2>
+            <p>Wallet Connected: <span id="wallet-status">Loading...</span></p>
+            <p>Current Balance: <span id="balance">Loading...</span></p>
+        </div>
+        
+        <div class="trades-panel">
+            <h2>Active Trades</h2>
+            <div id="active-trades">Loading...</div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+</body>
+</html> 

@@ -1,0 +1,24 @@
+{
+    "RPC_URL": "https://api.mainnet-beta.solana.com",
+    "WHIRLPOOL_PROGRAM": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
+    "UPDATE_INTERVAL": 1,
+    "POOLS": {
+        "SOL/USDC": {
+            "address": "HJPjoWUrhoZzkNfRpHuieeFk9WcZWjwy6PBjZ81ngndJ",
+            "tokenA": "So11111111111111111111111111111111111111112",
+            "tokenB": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+        },
+        "SOL/USDT": {
+            "address": "4GpUivZ2jvZqQ3vJRsoq5PwnYv6gdV9fJ9BzHT2JcRr7",
+            "tokenA": "So11111111111111111111111111111111111111112",
+            "tokenB": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+        }
+    },
+    "TRADING": {
+        "MAX_SLIPPAGE": 0.01,
+        "MIN_TRADE_SIZE_SOL": 0.1,
+        "MAX_TRADE_SIZE_SOL": 1.0,
+        "MIN_LIQUIDITY_USD": 10000,
+        "MIN_VOLUME_24H_USD": 50000
+    }
+} 
